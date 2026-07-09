@@ -1,0 +1,162 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.Spotlight-V100/
+.Trashes/
+
+# Editor and IDE settings
+.idea/
+.vscode/
+.fleet/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+*.pid.lock
+*.seed
+*.stackdump
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.local
+*.secret
+*.secrets
+
+# Archives
+*.7z
+*.gz
+*.zip
+*.tar
+*.tgz
+*.bz2
+*.rar
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.pyo
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pyre/
+.hypothesis/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+.eggs/
+*.egg
+*.egg-info/
+pip-wheel-metadata/
+build/
+dist/
+site/
+.ipynb_checkpoints/
+
+# Python virtual environments
+.venv/
+venv/
+env/
+ENV/
+mlBackend/venv/
+
+# Jupyter and ML artifacts
+*.h5
+*.hdf5
+*.keras
+*.ckpt
+*.pb
+*.tflite
+*.onnx
+*.joblib
+*.pkl
+*.pickle
+*.npy
+*.npz
+tensorboard/
+runs/
+wandb/
+mlruns/
+
+# Java and Maven
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+backend/target/
+target/
+.mvn/wrapper/maven-wrapper.jar
+
+# Spring / Java IDE files
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+/nbproject/private/
+/nbbuild/
+/nbdist/
+/.nb-gradle/
+
+# Node / frontend
+node_modules/
+.npm/
+.pnpm-store/
+.yarn/
+.parcel-cache/
+.next/
+.nuxt/
+.svelte-kit/
+.angular/
+coverage/
+storybook-static/
+dist-ssr/
+vite.svg
+*.tsbuildinfo
+
+# Frontend build output
+frontend/dist/
+frontend/build/
+frontend/.cache/
+
+# Docker and containers
+.docker/
+docker-data/
+
+# Local databases and temp files
+*.sqlite
+*.sqlite3
+*.db
+tmp/
+temp/
+.tmp/
+
+# Generated files inside source trees that should stay ignored
+!**/src/main/**/build/
+!**/src/main/**/target/
+!**/src/test/**/build/
+!**/src/test/**/target/
