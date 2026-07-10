@@ -1,4 +1,6 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   jpa:
     hibernate:
       ddl-auto: update
@@ -6,5 +8,15 @@ spring:
     name: diagnostic_system
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: "jdbc:postgresql://ep-bitter-waterfall-aob26o8j-pooler.c-2.ap-southeast-1.aws.neon.tech/medical_assistance?user=neondb_owner&password=npg_Df2vp4GKIlOQ&sslmode=require&channelBinding=require"
-    username: neondb_owner
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration: ${JWT_EXPIRATION:86400000}
+logging:
+  level:
+    org.springframework.security: DEBUG
+    com.rohit.diagnostic_system.security: DEBUG

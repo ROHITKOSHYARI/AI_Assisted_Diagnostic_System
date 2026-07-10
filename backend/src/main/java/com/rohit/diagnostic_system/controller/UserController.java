@@ -1,36 +1,54 @@
 package com.rohit.diagnostic_system.controller;
 
 import com.rohit.diagnostic_system.DTO.CreateUserRequest;
+import com.rohit.diagnostic_system.DTO.UpdateUserRequest;
 import com.rohit.diagnostic_system.DTO.UserResponse;
-import com.rohit.diagnostic_system.entity.User;
 import com.rohit.diagnostic_system.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.List;
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Slf4j
 public class UserController {
 
     private final UserService userService;
 
     @PostMapping("/save_user")
-    public ResponseEntity<String> saveUser(@RequestBody CreateUserRequest user){
-        userService.saveUser(user);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<UserResponse> saveUser(@RequestBody CreateUserRequest user) {
+        log.info("Create user requested for email={}", user.getEmail());
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
-    @GetMapping("/get_user/{ID}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable UUID ID) throws UserPrincipalNotFoundException {
-        UserResponse user = userService.getUser(ID);
-        return new ResponseEntity<>(user,HttpStatus.OK);
+    @GetMapping("/get_user/{id}")
+    public ResponseEntity<UserResponse> getUser(@PathVariable UUID id) {
+        log.info("Get user requested id={}", id);
+        return ResponseEntity.ok(userService.getUser(id));
     }
 
+    @GetMapping("/get_all_users")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        log.info("Get all users requested");
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PutMapping("/update_user/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest request) {
+        log.info("Update user requested id={}", id);
+        return ResponseEntity.ok(userService.updateUser(id, request));
+    }
+
+    @DeleteMapping("/delete_user/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+        log.info("Delete user requested id={}", id);
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

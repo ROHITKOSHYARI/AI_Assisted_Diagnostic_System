@@ -7,3 +7,5 @@ public enum DoctorStatus {
     REJECTED,
     SUSPENDED
 }
+
+

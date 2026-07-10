@@ -1,25 +1,22 @@
 package com.rohit.diagnostic_system.DTO;
 
 import com.rohit.diagnostic_system.Enum.Gender;
+import lombok.*;
 
 import java.time.LocalDate;
-
-import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateUserRequest {
+public class UpdateUserRequest {
 
     private String firstName;
 
     private String lastName;
 
     private String email;
-
-    private String password;
 
     private String phoneNumber;
 
@@ -34,6 +31,12 @@ public class CreateUserRequest {
     private Double weight;
 
     private String address;
+
+    private String profilePicture;
+
+    private Boolean verified;
+
+    private Boolean active;
 }
 
 

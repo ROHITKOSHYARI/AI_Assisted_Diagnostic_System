@@ -1,7 +1,6 @@
-package com.rohit.diagnostic_system.entity;
+package com.rohit.diagnostic_system.DTO;
 
 import com.rohit.diagnostic_system.Enum.ReportStatus;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -12,21 +11,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "reports")
-public class Report {
+public class ReportResponse {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false,name = "patient_id")
-    private User patient;
+    private UUID patientId;
 
-    @ManyToOne
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
+    private UUID doctorId;
 
     private String disease;
 
@@ -38,15 +29,13 @@ public class Report {
 
     private String gradCamImageUrl;
 
-    @Lob
     private String symptoms;
 
-    @Lob
     private String geminiAnalysis;
 
-    @Enumerated(EnumType.STRING)
     private ReportStatus status;
 
     private LocalDateTime createdAt;
 }
+
 

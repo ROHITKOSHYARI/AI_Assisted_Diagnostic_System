@@ -5,3 +5,4 @@ public enum AvailabilityStatus {
     IN_CONSULTATION,
     OFFLINE
 }
+
