@@ -97,6 +97,7 @@ tensorboard/
 runs/
 wandb/
 mlruns/
+rawdata/
 
 # Java and Maven
 *.class
