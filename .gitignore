@@ -162,3 +162,4 @@ temp/
 !**/src/test/**/build/
 !**/src/test/**/target/
 /AI_documentation
+AGENT_INSTRUCTIONS.md
