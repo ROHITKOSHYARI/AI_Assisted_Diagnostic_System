@@ -83,7 +83,6 @@ mlBackend/venv/
 # Jupyter and ML artifacts
 *.h5
 *.hdf5
-*.keras
 *.ckpt
 *.pb
 *.tflite
