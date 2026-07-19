@@ -22,6 +22,7 @@ import java.util.List;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
+    private final BlacklistService blacklistService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -35,6 +36,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             Claims claims = jwtService.extractClaims(header.substring(7));
+            if (blacklistService.isBlacklisted(claims)) {
+                SecurityContextHolder.clearContext();
+                log.warn("JWT rejected because principal is blacklisted subject={} path={}",
+                        claims.getSubject(), request.getRequestURI());
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User is blacklisted");
+                return;
+            }
+
             String role = claims.get("role", String.class);
             var authentication = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
                     List.of(new SimpleGrantedAuthority("ROLE_" + role)));

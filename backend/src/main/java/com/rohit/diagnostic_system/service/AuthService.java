@@ -7,6 +7,7 @@ import com.rohit.diagnostic_system.entity.Doctor;
 import com.rohit.diagnostic_system.entity.User;
 import com.rohit.diagnostic_system.repository.DoctorRepository;
 import com.rohit.diagnostic_system.repository.UserRepository;
+import com.rohit.diagnostic_system.security.BlacklistService;
 import com.rohit.diagnostic_system.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +23,7 @@ public class AuthService {
     private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final BlacklistService blacklistService;
 
     public AuthResponse loginUser(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
@@ -32,6 +34,11 @@ public class AuthService {
 
         if (!user.isActive() || !passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
             log.warn("User login failed: inactive account or bad password email={}", request.getEmail());
+            throw new BadCredentialsException("Invalid email or password");
+        }
+
+        if (blacklistService.isUserBlacklisted(user.getId(), user.getEmail())) {
+            log.warn("User login failed: blacklisted userId={}", user.getId());
             throw new BadCredentialsException("Invalid email or password");
         }
 

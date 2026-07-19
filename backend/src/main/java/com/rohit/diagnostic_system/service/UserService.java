@@ -5,6 +5,7 @@ import com.rohit.diagnostic_system.DTO.UpdateUserRequest;
 import com.rohit.diagnostic_system.DTO.UserResponse;
 import com.rohit.diagnostic_system.entity.User;
 import com.rohit.diagnostic_system.repository.UserRepository;
+import com.rohit.diagnostic_system.security.BlacklistService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final BlacklistService blacklistService;
 
     public UserResponse saveUser(CreateUserRequest request) {
         User user = User.builder()
@@ -43,9 +45,9 @@ public class UserService {
         return toResponse(saved);
     }
 
-    public UserResponse getUser(UUID id) {
-        log.info("Fetching user id={}", id);
-        return toResponse(findUser(id));
+    public UserResponse getUser(String email) {
+        log.info("Fetching user");
+        return toResponse(findUser(email));
     }
 
     public List<UserResponse> getAllUsers() {
@@ -53,8 +55,8 @@ public class UserService {
         return userRepository.findAll().stream().map(this::toResponse).toList();
     }
 
-    public UserResponse updateUser(UUID id, UpdateUserRequest request) {
-        User user = findUser(id);
+    public UserResponse updateUser(String email, UpdateUserRequest request) {
+        User user = findUser(email);
         if (request.getFirstName() != null) user.setFirstName(request.getFirstName());
         if (request.getLastName() != null) user.setLastName(request.getLastName());
         if (request.getEmail() != null) user.setEmail(request.getEmail());
@@ -67,21 +69,31 @@ public class UserService {
         if (request.getAddress() != null) user.setAddress(request.getAddress());
         if (request.getProfilePicture() != null) user.setProfilePicture(request.getProfilePicture());
         if (request.getVerified() != null) user.setVerified(request.getVerified());
-        if (request.getActive() != null) user.setActive(request.getActive());
+        if (request.getActive() != null) {
+            user.setActive(request.getActive());
+        }
         User saved = userRepository.save(user);
+
+        if (request.getActive() != null && !request.getActive()) {
+            blacklistService.blacklistUser(saved.getId(), saved.getEmail());
+        } else if (request.getActive() != null) {
+            blacklistService.removeUserFromBlacklist(saved.getId(), saved.getEmail());
+        }
+
         log.info("User updated id={}", saved.getId());
         return toResponse(saved);
     }
 
-    public void deleteUser(UUID id) {
-        User user = findUser(id);
+    public void deleteUser(String email) {
+        User user = findUser(email);
+        blacklistService.blacklistUser(user.getId(), user.getEmail());
         userRepository.delete(user);
-        log.info("User deleted id={}", id);
+        log.info("User deleted");
     }
 
-    private User findUser(UUID id) {
-        return userRepository.findById(id).orElseThrow(() -> {
-            log.warn("User not found id={}", id);
+    private User findUser(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> {
+            log.warn("User not found");
             return new NoSuchElementException("User not found");
         });
     }

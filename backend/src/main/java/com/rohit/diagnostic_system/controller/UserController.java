@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +23,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final SecurityFilterChain securityFilterChain;
 
     @PostMapping("/save_user")
     public ResponseEntity<UserResponse> saveUser(@RequestBody CreateUserRequest user) {
@@ -28,9 +32,11 @@ public class UserController {
     }
 
     @GetMapping("/get_user/{id}")
-    public ResponseEntity<UserResponse> getUser(@PathVariable UUID id) {
-        log.info("Get user requested id={}", id);
-        return ResponseEntity.ok(userService.getUser(id));
+    public ResponseEntity<UserResponse> getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        log.info("Get user requested : {}",userService.getUser(email).getFirstName());
+        return ResponseEntity.ok(userService.getUser(email));
     }
 
     @GetMapping("/get_all_users")
@@ -39,16 +45,20 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PutMapping("/update_user/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable UUID id, @RequestBody UpdateUserRequest request) {
-        log.info("Update user requested id={}", id);
-        return ResponseEntity.ok(userService.updateUser(id, request));
+    @PutMapping("/update_user")
+    public ResponseEntity<UserResponse> updateUser(@RequestBody UpdateUserRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        log.info("Update user requested : {}",userService.getUser(email).getFirstName());
+        return ResponseEntity.ok(userService.updateUser(email, request));
     }
 
     @DeleteMapping("/delete_user/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
-        log.info("Delete user requested id={}", id);
-        userService.deleteUser(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        log.info("Delete user requested {}",userService.getUser(email).getFirstName());
+        userService.deleteUser(email);
         return ResponseEntity.noContent().build();
     }
 }
